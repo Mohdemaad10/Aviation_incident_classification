@@ -16,6 +16,9 @@ jobs:
         with:
           python-version: 3.14.0 
 
+      - name: dependencies
+        run: pip install -r requirements.txt
+
       - name: connect db
         run: python build_connection.py
 
