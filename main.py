@@ -5,6 +5,7 @@ import joblib
 import sqlite3
 from pydantic import BaseModel
 from dotenv import load_dotenv
+from wrapper_class import NNclassifier
 
 # Initialize fastapi
 app= FastAPI()
@@ -23,7 +24,7 @@ api_key_header=APIKeyHeader(name="X-API-Key", auto_error=False)
 #function to verify if the api key given is correct
 def verify_api_key(api_key: str = Security(api_key_header)):
       if api_key != secret_api_key:
-            raise HTTPException(status_code=401,detail="not valid")
+            raise HTTPException(status_code=401,detail="api_key not valid")
       return api_key
 
             
@@ -35,9 +36,9 @@ class PredictionRequest(BaseModel):
 # deserialize the model loaded in logisticregression.ipynb
 lr_load=joblib.load("lr_model_pipeline.joblib")
 
-# call prediction
+# call prediction for logistic regression
 @app.post("/predict")
-def prediction(request: PredictionRequest,
+def prediction_LR(request: PredictionRequest,
                api_key: str = Security(verify_api_key)
                ):
      prediction = lr_load.predict([request.narrative])
@@ -61,4 +62,12 @@ def ReportRequest(report_id: int,
            "Event Label": row[2]
      }
      
+# Instantiate wrapper class obj for endpoint
+NN_classifier=NNclassifier()
 
+# call prediction for neural networks with inverse frequency weighing
+@app.post("/predict/nn")
+def prediction_NN(request: PredictionRequest,
+               api_key: str=Security(verify_api_key)):
+      prediction=NN_classifier.predict_text(request.narrative)
+      return {"prediction": prediction}
