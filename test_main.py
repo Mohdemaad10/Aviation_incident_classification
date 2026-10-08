@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 import os
 from dotenv import load_dotenv
+import pytest
 
 #set up the environment variable
 load_dotenv()
@@ -11,36 +12,43 @@ from main import app
 #initialize testclient
 client=TestClient(app)
 
+# Parametrize tests using pytest.mark.parametrize so that both nn and lr endpoints can be tested in one function
+list_of_endpoints=["/predict","/predict/nn"]
+@pytest.mark.parametrize("endpoint",list_of_endpoints)
+
 #test 1(if api key wrong or missing)
-def test_prediction_missing_key():
+def test_prediction_missing_key(endpoint):
     response=client.post(
-        "/predict",
+        endpoint,
         json={"narrative":"altitude decreasing"}
     )
     assert response.status_code==401
 
+@pytest.mark.parametrize("endpoint",list_of_endpoints)
 #test 1.1(if key is wrong)
-def test_prediction_wrong_key():
+def test_prediction_wrong_key(endpoint):
     response=client.post(
-        "/predict",
+        endpoint,
         headers={"X-API-KEY":"fjdks"},
         json={"narrative":"we lost one engine mid flight and we had to emergency land"}
     )
     assert response.status_code==401
 
+@pytest.mark.parametrize("endpoint",list_of_endpoints)
 # if entered wrong input
-def test_prediction_wrong_input():
+def test_prediction_wrong_input(endpoint):
     response=client.post(
-        "/predict",
+        endpoint,
         json={"narrative":123},
         headers={"X-API-KEY":correct_key}
     )
     assert response.status_code==422
 
+@pytest.mark.parametrize("endpoint",list_of_endpoints)
 # testing valid request
-def test_valid_request():
+def test_valid_request(endpoint):
     response=client.post(
-        "/predict",
+        endpoint,
         json={"narrative":"we were descending when one of our engines caught fire"},
         headers={"X-API-KEY":correct_key}
     )
