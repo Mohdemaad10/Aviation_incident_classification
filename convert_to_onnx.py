@@ -8,3 +8,5 @@ dummy_input=np.zeros((1,10000), dtype=np.float32)
 model(dummy_input)
 
 model.export("NN_model.onnx", format="onnx")
+
+
