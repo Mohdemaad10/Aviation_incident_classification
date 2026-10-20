@@ -1,4 +1,5 @@
 import pandas as pd
+import joblib
 
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
@@ -85,6 +86,8 @@ for max_features in [10000,20000]:
                         "alpha": alpha
                     }
 
+joblib.dump(best_nb_model,"nb_model.joblib",compress=3)
+
 nb_train_acc = accuracy_score(y_train,best_nb_model.predict(X_train))
 nb_test_acc = accuracy_score(y_test, best_nb_model.predict(X_test))
 
@@ -147,6 +150,8 @@ for max_features in [10000, 20000]:
                         "min_df": min_df,
                         "C": c_value
                     }
+
+joblib.dump(best_svm_model,"svm_model.joblib",compress=3)
 
 svm_train_acc = accuracy_score(y_train, best_svm_model.predict(X_train))
 svm_test_acc = accuracy_score(y_test,best_svm_model.predict(X_test))
