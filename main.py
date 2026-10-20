@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, Security
 from fastapi.security import APIKeyHeader
+from fastapi.responses import RedirectResponse
 import os
 import joblib
 import sqlite3
@@ -32,6 +33,11 @@ def verify_api_key(api_key: str = Security(api_key_header)):
 # class using pydantic for data validation (tells fastapi which data type to accept)
 class PredictionRequest(BaseModel):
     narrative:str
+
+# Redirect users directly to website
+@app.get("/", include_in_schema=False)
+def root():
+    return RedirectResponse(url="/docs")
 
 # deserialize the model loaded in logisticregression.ipynb
 lr_load=joblib.load("lr_model_pipeline.joblib")

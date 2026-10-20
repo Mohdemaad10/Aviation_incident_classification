@@ -89,3 +89,9 @@ def test_connection4_to_db():
 
     )
     assert response.status_code==401
+
+
+def test_redirect_users():
+    response=client.get("/")
+
+    assert response.status_code==200
