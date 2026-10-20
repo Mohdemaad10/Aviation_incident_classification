@@ -219,3 +219,5 @@ __marimo__/
 Aviation.db
 .env.txt
 .vscode/
+hyperparameter_tuning_results.csv
+mlflow.db

@@ -8,3 +8,10 @@ __pycache__/
 .ipynb_checkpoints/
 *.ipynb
 *.db
+hyperparameter_tuning_results.csv
+nb_model.joblib
+svm_model.joblib
+nn_model.keras
+convert_to_onnx.py
+mlruns/
+docs/
